@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/materialize.min.css" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#2d2d2d" />
+  <link rel="shortcut icon" href="/icon-192x192.png">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
 </head>
 
 <body>
@@ -29,8 +31,8 @@
   <script src="js/nav.js"></script>
   <script src="js/idb.js"></script>
   <script src="js/db.js"></script>
+  <script src="/js//sw-register.js"></script>
   <script>
-
     // REGISTER SERVICE WORKER
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
@@ -52,6 +54,7 @@
     });
 
     // Periksa fitur Notification API
+
     if ("Notification" in window) {
       requestPermission();
     } else {
@@ -68,10 +71,27 @@
           console.error("Pengguna menutup kotak dialog permintaan ijin.");
           return;
         }
-
-        console.log("Fitur notifikasi diijinkan.");
+        if (('PushManager' in window)) {
+          navigator.serviceWorker.getRegistration().then(function (registration) {
+            registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array("BDuef21cQLfaUTBSQop0epoyqelDiVifGy3kw7I9qfk6ULu_sKpLZXN1oKfArwU4usbZ98mWUyf8hiFhrSQUnQo")
+            }).then(function (subscribe) {
+              console.log('Berhasil melakukan subscribe dengan endpoint: ', subscribe.endpoint);
+              console.log('Berhasil melakukan subscribe dengan p256dh key: ', btoa(String.fromCharCode.apply(
+                null, new Uint8Array(subscribe.getKey('p256dh')))));
+              console.log('Berhasil melakukan subscribe dengan auth key: ', btoa(String.fromCharCode.apply(
+                null, new Uint8Array(subscribe.getKey('auth')))));
+            }).catch(function (e) {
+              console.error('Tidak dapat melakukan subscribe ', e.message);
+            });
+          });
+        }
       });
     }
+
+    // Sample push notification
+
     function showNotifikasiSederhana() {
       const title = 'Notifikasi Sederhana';
       const options = {
@@ -83,6 +103,131 @@
         });
       } else {
         console.error('FItur notifikasi tidak diijinkan.');
+      }
+    }
+    function showNotifikasiRequireInteraction() {
+      const title = 'Notifikasi yang meminta interaksi pengguna';
+      const options = {
+        requireInteraction: true,
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+    function showNotifikasiIkon() {
+      const title = 'Notifikasi Sederhana';
+      const options = {
+        'body': 'Ini adalah konten notifikasi dengan gambar ikon.',
+        'icon': 'icon.png'
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+
+    function showNotifikasiActions() {
+      const title = 'Notifikasi dengan Actions';
+      const options = {
+        'body': 'Ini adalah konten notifikasi dengan pilihan actions.',
+        'actions': [
+          {
+            'action': 'yes-action',
+            'title': 'Ya',
+            'icon': 'icon.png',
+          },
+          {
+            'action': 'no-action',
+            'title': 'Tidak',
+            'icon': 'icon.png',
+          }
+        ]
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+
+    function showNotifikasiTag() {
+      const title1 = 'Notifikasi dengan Tag - 1';
+      const options1 = {
+        body: 'Anggota tag 1',
+        tag: 'message-group-1'
+      };
+      // notifikasi kedua
+      const title2 = 'Notifikasi dengan Tag - 2';
+      const options2 = {
+        body: 'Anggota tag 2',
+        tag: 'message-group-2'
+      };
+      // notifikasi ketiga
+      const title3 = 'Notifikasi dengan Tag - 3';
+      const options3 = {
+        body: 'Anggota tag 1',
+        tag: 'message-group-1'
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title1, options1);
+          registration.showNotification(title2, options2);
+          registration.showNotification(title3, options3);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+    function showNotifikasiRenotify() {
+      const title = 'Notifikasi dengan Renotify';
+      const options = {
+        body: 'Renotify',
+        tag: 'message-group-1',
+        renotify: true,
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+
+    function showNotifikasiSilent() {
+      const title = 'Notifikasi senyap';
+      const options = {
+        silent: true
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+    function showNotifikasiGambar() {
+      const title = 'Notifikasi dengan Gambar';
+      const options = {
+        'body': 'Ini adalah konten notifikasi dengan gambar latar.',
+        'image': 'icon.png'
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
       }
     }
   </script>

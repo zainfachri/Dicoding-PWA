@@ -11,11 +11,12 @@ function saveForLater(team) {
       var tx = db.transaction("teams", "readwrite");
       var store = tx.objectStore("teams");
       console.log(team);
-      store.add(team);
+      store.put(team);
       return tx.complete;
     })
     .then(function () {
       console.log("Team Favorit telah ditambahkan.");
+      // M.toast({ html: 'Team Favorit telah ditambahkan.' })
     });
 }
 
@@ -39,7 +40,7 @@ function getById(id) {
       .then(function (db) {
         var tx = db.transaction("teams", "readonly");
         var store = tx.objectStore("teams");
-        return store.get(id);
+        return store.get(parseInt(id))
       })
       .then(function (team) {
         resolve(team);
@@ -53,7 +54,7 @@ function dbDeleteTeam(id) {
       .then(function (db) {
         var tx = db.transaction("teams", "readwrite");
         var store = tx.objectStore("teams");
-        store.delete(id.id);
+        store.delete(parseInt(id));
         return store.complete;
       })
       .then(function () {

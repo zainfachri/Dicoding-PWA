@@ -1,4 +1,15 @@
+// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 const base_url = "https://api.football-data.org/v2/";
+const standData = `${base_url}competitions/2019/standings`
+// url = url.replace(/^http:\/\//i, 'https://');
+
+const fetchApi = function (url) {
+  return fetch(url, {
+    headers: {
+      'X-Auth-Token': '91c73e0fc5544a5dabd3e74b2fcb9954'
+    }
+  });
+}
 
 function status(response) {
   if (response.status !== 200) {
@@ -17,27 +28,35 @@ function error(error) {
   console.log("Error : " + error);
 }
 
+
 function getStandings() {
   return new Promise(function (resolve, reject) {
     if ('caches' in window) {
-      caches.match(`${base_url}competitions/2019/standings`).then(function (response) {
+      caches.match(standData).then(function (response) {
         if (response) {
           response.json().then(function (data) {
             var standingsHTML = "";
             data.standings[0].table.forEach(function (team) {
               standingsHTML += `
-                  <div class="card">
-                    <a href="./standing.html?id=${team.team.id}">
-                        <div class="card-image waves-effect waves-block waves-light">
-                            <img src="${team.team.crestUrl}" style="padding-top: 20px"/>
-                        </div>
-                    </a>
-                    <div class="card-content">
-                        <span class="card-title truncate">${team.team.name}</span>
-                        <p>Matches played: ${team.playedGames}</p>
-                    </div>
-                  </div>
-                `;
+              <div class="card">
+              <a href="./standing.html?id=${team.team.id}">
+                <div class="card-image waves-effect waves-block waves-light">
+                    <img src=${team.team.crestUrl} alt=${team.team.name} style="padding-top: 20px"/>
+                </div>
+              </a>
+              <div class="card-content">
+                <span class="card-title truncate"><strong>${team.team.name}</strong></span>
+                <p>Total Permainan: ${team.playedGames}</p>
+                <table>
+                  <tr>
+                    <td>Menang: ${team.won}</td>
+                    <td>Kalah: ${team.lost}</td>
+                    <td>Seri: ${team.draw}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          `;
             });
             // Sisipkan komponen card ke dalam elemen dengan id #content
             document.getElementById("standings").innerHTML = standingsHTML;
@@ -46,12 +65,7 @@ function getStandings() {
         }
       })
     }
-
-    fetch(`${base_url}competitions/2019/standings`, {
-      headers: {
-        "X-Auth-Token": '91c73e0fc5544a5dabd3e74b2fcb9954'
-      }
-    })
+    fetchApi(standData)
       .then(status)
       .then(json)
       .then(function (data) {
@@ -63,7 +77,7 @@ function getStandings() {
           <div class="card">
             <a href="./standing.html?id=${team.team.id}">
               <div class="card-image waves-effect waves-block waves-light">
-                  <img src="${team.team.crestUrl}" style="padding-top: 20px"/>
+                  <img src=${team.team.crestUrl} alt=${team.team.name} style="padding-top: 20px"/>
               </div>
             </a>
             <div class="card-content">
@@ -100,14 +114,15 @@ function getTeamById() {
             var teamHTML = `
             <div class="card">
               <div class="card-image waves-effect waves-block waves-light">
-              <img src="${data.crestUrl}" />
+              <img src="${data.crestUrl}" alt="${data.name}"/>
               </div>
               <div class="card-content">
-                <span class="card-title">${data.result.name}</span>
-                ${snarkdown(data.result.playedGames)}
+                <span class="card-title">${data.name}</span>
+                ${snarkdown(data.shortName)}
               </div>
             </div>
           `;
+            console.log('data name', data.name);
             // Sisipkan komponen card ke dalam elemen dengan id #content
             document.getElementById("body-content").innerHTML = teamHTML;
             resolve(data);
@@ -115,11 +130,7 @@ function getTeamById() {
         }
       });
     }
-    fetch(`${base_url}teams/${idParam}`, {
-      headers: {
-        "X-Auth-Token": '91c73e0fc5544a5dabd3e74b2fcb9954'
-      }
-    })
+    fetchApi(`${base_url}teams/${idParam}`)
       .then(status)
       .then(json)
       .then((data) => {
@@ -127,7 +138,7 @@ function getTeamById() {
         let teamHTML = `
           <div class="card" style="margin-top: 10px;">
             <div class="card-image waves-effect waves-block waves-light" >
-            <img src="${data.crestUrl}" style="padding-top: 20px;" />
+            <img src="${data.crestUrl}" alt=${data.name} style="padding-top: 20px;" />
             </div>
             <div class="card-content">
               <p class="card-title"><strong>${data.name}</strong></p>
@@ -166,9 +177,10 @@ function getSavedTeams() {
       standings.forEach(function (team) {
         standingsHTML += `
           <div class="card">
+          <button id="${team.id}" class="removeButton btn">Remove</button>
                       <a href="./standing.html?id=${team.id}">
                         <div class="card-image waves-effect waves-block waves-light">
-                          <img src="${team.crestUrl}" style="padding-top: 20px"/>
+                          <img src="${team.crestUrl}" alt=${team.name} style="padding-top: 20px"/>
                         </div>
                       </a>
                       <div class="card-content">
@@ -177,18 +189,22 @@ function getSavedTeams() {
                         <span>${team.email}</span>
                         <span>${team.website}</span>
                       </div>
-                      <button id="${team.id}" class="removeButton btn">Remove</button>
+                      
                     </div> 
           `;
       });
+      var standingsNull = "<p>Belum ada team favorite<p>"
       // Sisipkan komponen card ke dalam elemen dengan id #body-content
-      document.getElementById("saved").innerHTML = standingsHTML;
+      // console.log('saved data', standings)
+      // console.log('standingsHTML data', standingsHTML)
+      document.getElementById("saved").innerHTML = standings.length < 1 ? standingsNull : standingsHTML;
 
       let removeButtons = document.querySelectorAll(".removeButton");
       for (let button of removeButtons) {
         button.addEventListener("click", function (event) {
           let id = event.target.id;
           console.log('ini id', id)
+          M.toast({ html: 'Team Favorit telah dihapus' })
           dbDeleteTeam(id).then(() => {
             getSavedTeams()
           })
@@ -207,7 +223,7 @@ function getSavedTeamById() {
     var teamHTML = `
           < div class="card" >
         <div class="card-image waves-effect waves-block waves-light">
-        <img src="${data.crestUrl}" />
+        <img src="${data.crestUrl}" alt=${data.name}/>
         </div>
         <div class="card-content">
           <span class="card-title">${data.name}</span>

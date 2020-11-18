@@ -55,6 +55,21 @@
     } else {
       console.log("ServiceWorker belum didukung browser ini.");
     }
+    function showNotifikasiBadge() {
+      const title = 'Team di Tambahkan';
+      const options = {
+        'body': 'Team telah ditambahkan ke favorite',
+        'icon': 'icon.png'
+      };
+      if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
+      } else {
+        console.error('Fitur notifikasi tidak diijinkan.');
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       var urlParams = new URLSearchParams(window.location.search);
       var isFromSaved = urlParams.get("saved");
@@ -67,7 +82,10 @@
         var item = getTeamById();
       }
       btnSave.onclick = function () {
-        alert("Team favorit ditambahkan");
+        // alert("Team favorit ditambahkan");
+        M.toast({ html: 'Team Favorit telah ditambahkan.' })
+
+        showNotifikasiBadge();
         item.then(function (team) {
           saveForLater(team);
         });

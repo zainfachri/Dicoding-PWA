@@ -1,5 +1,6 @@
 {
     "name": "Football Info",
+    "gcm_sender_id": "802526570155",
     "short_name": "Football",
     "description": "Football Info",
     "start_url": "/index.html",
@@ -14,7 +15,7 @@
             "purpose": "any maskable"
         },
         {
-            "src": "icon-192x912.png",
+            "src": "icon-192x192.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
