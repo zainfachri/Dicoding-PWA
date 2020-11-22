@@ -1,4 +1,4 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.0.0/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js');
 
 if (workbox)
   console.log(`Workbox berhasil dimuat`);
@@ -91,14 +91,8 @@ workbox.precaching.precacheAndRoute([
   { url: 'https://fonts.gstatic.com/s/materialicons/v67/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2', revision: '1' },
 ]);
 
-
-
-
-
 //=================================================//
 //=================================================//
-
-
 // const CACHE_NAME = 'footballinfo-v7';
 // var urlsToCache = [
 //   "/",
