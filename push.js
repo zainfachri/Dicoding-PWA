@@ -1,8 +1,8 @@
 var webPush = require('web-push');
 
 const vapidKeys = {
-    "publicKey": "BDuef21cQLfaUTBSQop0epoyqelDiVifGy3kw7I9qfk6ULu_sKpLZXN1oKfArwU4usbZ98mWUyf8hiFhrSQUnQo",
-    "privateKey": "3KIUUKya9nNxT4bTzC27UOT9yCb3lDUy7lKU9ftVuZI"
+    "publicKey": "BHEiCZ2RmOTvHyzyo1mbiGbrLvKOvHAMh1YNRDrNIw74_PR8BGoqCxQQmpDVDxC6L6-X167iQTu1MxJRMqF7GLc",
+    "privateKey": "CAj40vf9mxVtUUyID8iwOv6vVDA5KQwoBa7Z4kAZ6vA"
 };
 
 
@@ -12,16 +12,16 @@ webPush.setVapidDetails(
     vapidKeys.privateKey
 )
 var pushSubscription = {
-    "endpoint": "https://fcm.googleapis.com/fcm/send/ewn0tcPOkWQ:APA91bHIjF63akAb1jm6FwmEW1iCjHASJ35lMSwE1-_sSd9TZTiiDgyd6FC7wV9CUB1IHdLLH6Ec8_OTB74XfDRZwNThx-EGIUybA6KYFPb4-zyOrxWt-Ft7nRJUqSuMTtmpW_OoCkS4",
+    "endpoint": "https://sg2p.notify.windows.com/w/?token=BQYAAACg92Whw85xRT1wMu0Z0Sq%2bOIVuBTiutBSZrBpeGCHqHfPAeA9nISftxOOqal8LcwhC0h5vpvwv%2fxavvDn6MZU4mxGZip%2bmULOrq15GwX9DtM%2ftwTGZ%2fvqmwIMRHfXIZXK02TaK%2bpcce4Zbw3JTW5R%2bbJ0tmMIF3q3VKWQUA2PXjnz2uF0Sasm4L0DeCOaS2JdxkpvR5bafof5s9P3ccueYu%2fUAUgBc6P%2bjWBT9oLegvLUYeE74eqZrODt5N41V%2fBqSy7uOsokfS05mrrm%2fePvythi6AFgPHm0yLSc3wzuOiLCD32iXat1g3v5O%2f%2bw0vJpZ1eQmuuffGiZBZXRnmLEg",
     "keys": {
-        "p256dh": "BPX/ygOL57fXJkfUwsdTPwmpRVEe1vhhmsCDcRSJgFrxI+Y+pFNtwQFdZWSw4bedzAKbLUZrGwKoutSUYBfF6NI=",
-        "auth": "ksFpZcn/bE9ntyaqmpA2KQ=="
+        "p256dh": "BJouM08DWQ44mKyV/UbBY3bGW3KU4TlrpI8Uyu+X/tkxzqzovzXZ+Rgb1VnqRT3kG0LtTeSCvgPMhFg1EHN3baE=",
+        "auth": "9hqGn9LMOKqeD+0mjmwuAA=="
     }
 };
-var payload = 'Selamat! Aplikasi Anda sudah dapat menerima push notifikasi!';
+var payload = 'Horeee';
 
 var options = {
-    gcmAPIKey: '802526570155',
+    gcmAPIKey: '732212738186',
     TTL: 60
 };
 webPush.sendNotification(
